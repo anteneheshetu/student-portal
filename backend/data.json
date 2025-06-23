@@ -1,0 +1,52 @@
+{
+  "students": [
+    {
+      "id": "1233",
+      "name": "YAbkal Yilikal",
+      "results": [
+        {
+          "subject": "ggg",
+          "score": "90",
+          "date": "2025-06-22"
+        }
+      ]
+    },
+    {
+      "id": "12",
+      "name": "Kidus Tesfay",
+      "results": [
+        {
+          "subject": "unit 7 Aim A",
+          "score": "M",
+          "date": "2025-06-22"
+        },
+        {
+          "subject": "Kidus",
+          "score": "A",
+          "date": "2025-06-22"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "ww",
+      "results": []
+    },
+    {
+      "id": "6",
+      "name": "b",
+      "results": []
+    },
+    {
+      "id": "77",
+      "name": "gg",
+      "results": []
+    }
+  ],
+  "books": [
+    {
+      "title": "Unit 7",
+      "author": "Pearson"
+    }
+  ]
+}
