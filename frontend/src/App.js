@@ -9,6 +9,8 @@ import Admin from './pages/Admin';
 import Login from './pages/Login';
 import StudentLogin from './pages/StudentLogin';
 import StudentProfile from './pages/StudentProfile';
+import AdminUpload from './pages/AdminUpload';
+import StudentSubmission from './pages/StudentSubmission';
 
 function AppWrapper() {
   return (
@@ -36,6 +38,10 @@ function App() {
          {(isAdmin) && <Link to="/results" style={navLink}>Results</Link>}
 
           {isAdmin && <Link to="/admin" style={navLink}>Admin</Link>}
+{isAdmin && <Link to="/admin-upload" style={navLink}>Upload Material</Link>}
+{studentId && <Link to="/submit-work" style={navLink}>Submit Work</Link>}
+
+
         </div>
         <div>
           {!isAdmin && !studentId ? (
@@ -63,6 +69,9 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/student-login" element={<StudentLogin />} />
         <Route path="/students/:id" element={<StudentProfile />} />
+<Route path="/admin-upload" element={<AdminUpload />} />
+<Route path="/submit-work" element={<StudentSubmission />} />
+
       </Routes>
     </div>
   );

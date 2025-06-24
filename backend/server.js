@@ -1,95 +1,89 @@
+// server.js
 const express = require('express');
-const fs = require('fs');
 const cors = require('cors');
+const fs = require('fs');
+const multer = require('multer');
+const path = require('path');
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
 
-// Load data
-let data = { students: [], books: [], results: [] };
+// File upload setup
+const storage = multer.diskStorage({
+  destination: 'uploads/',
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '-' + file.originalname);
+  }
+});
+const upload = multer({ storage });
 
-try {
-  const raw = fs.readFileSync('data.json');
-  data = JSON.parse(raw);
-} catch {
-  console.log('No existing data, starting fresh.');
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+const DATA_FILE = path.join(__dirname, 'data.json');
+
+let data = { students: [], books: [], submissions: [] };
+
+function loadData() {
+  if (fs.existsSync(DATA_FILE)) {
+    data = JSON.parse(fs.readFileSync(DATA_FILE));
+  }
 }
 
-// Save helper
 function saveData() {
-  fs.writeFileSync('data.json', JSON.stringify(data, null, 2));
+  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
 }
 
-// === STUDENTS ===
-app.get('/students', (req, res) => res.json(data.students));
+loadData();
 
-app.post('/students', (req, res) => {
-  const student = { ...req.body, results: [] };
-  data.students.push(student);
-  saveData();
-  res.status(201).send('Student added');
-});
+// Teacher uploads a document
+app.post('/books/upload', upload.single('file'), (req, res) => {
+  const { title, author } = req.body;
+  const file = req.file;
 
-// === BOOKS ===
-app.get('/books', (req, res) => res.json(data.books));
+  if (!file) return res.status(400).json({ error: 'No file uploaded' });
 
-app.post('/books', (req, res) => {
-  data.books.push(req.body);
-  saveData();
-  res.status(201).send('Book added');
-});
-
-// === STUDENT-SPECIFIC RESULTS ===
-app.get('/students/:id/results', (req, res) => {
-  const student = data.students.find(s => s.id === req.params.id);
-  if (!student) return res.status(404).send('Student not found');
-  res.json(student.results || []);
-});
-
-app.post('/students/:id/results', (req, res) => {
-  const student = data.students.find(s => s.id === req.params.id);
-  if (!student) return res.status(404).send('Student not found');
-
-  const result = {
-    subject: req.body.subject,
-    score: req.body.score,
-    date: req.body.date || new Date().toISOString().slice(0, 10)
+  const book = {
+    title,
+    author,
+    filename: file.filename,
+    url: `/uploads/${file.filename}`
   };
 
-  student.results.push(result);
+  data.books.push(book);
   saveData();
-  res.status(201).send('Result added');
+  res.status(201).json(book);
 });
 
-// === GLOBAL RESULTS LIST ===
-app.get('/results', (req, res) => {
-  const allResults = data.students.flatMap(s =>
-    (s.results || []).map(r => ({
-      studentId: s.id,
-      name: s.name,
-      ...r
-    }))
-  );
-  res.json(allResults);
-});
+// Student submits work
+app.post('/submissions', upload.single('file'), (req, res) => {
+  const { studentId, title } = req.body;
+  const file = req.file;
 
-app.post('/results', (req, res) => {
-  const { studentId, subject, score, date } = req.body;
-  const student = data.students.find(s => s.id === studentId);
-  if (!student) return res.status(404).send('Student not found');
+  if (!file) return res.status(400).json({ error: 'No file uploaded' });
 
-  const result = {
-    subject,
-    score,
-    date: date || new Date().toISOString().slice(0, 10)
+  const submission = {
+    studentId,
+    title,
+    filename: file.filename,
+    url: `/uploads/${file.filename}`,
+    date: new Date().toISOString().split('T')[0]
   };
 
-  student.results.push(result);
+  if (!data.submissions) data.submissions = [];
+  data.submissions.push(submission);
   saveData();
-  res.status(201).send('Result added globally');
+  res.status(201).json(submission);
 });
 
-// === Start Server ===
-app.listen(PORT, () => console.log(`✅ Server running at http://localhost:${PORT}`));
+// Get student submissions
+app.get('/submissions/:studentId', (req, res) => {
+  const studentId = req.params.studentId;
+  const filtered = (data.submissions || []).filter(s => s.studentId === studentId);
+  res.json(filtered);
+});
+
+// Existing routes (e.g., /students, /results, etc.) should follow here
+
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
