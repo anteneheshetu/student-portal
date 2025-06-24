@@ -35,7 +35,7 @@ export default function Admin() {
   // Handlers
   const handleAddStudent = async (e) => {
     e.preventDefault();
-    const res = await fetch('http://localhost:5000/students', {
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/students`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: studentId, name: studentName, results: [] })
@@ -47,7 +47,7 @@ export default function Admin() {
 
   const handleAddBook = async (e) => {
     e.preventDefault();
-    const res = await fetch('http://localhost:5000/books', {
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/books`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ title: bookTitle, author: bookAuthor })
@@ -59,7 +59,9 @@ export default function Admin() {
 
   const handleAddResult = async (e) => {
     e.preventDefault();
-    const res = await fetch('http://localhost:5000/results', {
+
+
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/results`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ studentId: resultStudentId, subject, score })

@@ -9,7 +9,8 @@ export default function StudentLogin() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`http://localhost:5000/students/${studentId}/results`);
+
+      const res = await fetch (`${process.env.REACT_APP_API_URL}/students/${studentId}/results`);
       if (!res.ok) throw new Error('Student not found');
 
       localStorage.setItem('studentId', studentId);

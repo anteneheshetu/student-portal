@@ -22,7 +22,7 @@ const navigate = useNavigate();
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    fetch('http://localhost:5000/results')
+    fetch (`${process.env.REACT_APP_API_URL}/results`)
       .then((res) => res.json())
       .then(setResults)
       .catch((err) => console.error('Error:', err));

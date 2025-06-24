@@ -4,7 +4,7 @@ export default function Resources() {
   const [books, setBooks] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/books')
+    fetch(`${process.env.REACT_APP_API_URL}/books`)
       .then((res) => res.json())
       .then(setBooks)
       .catch((err) => console.error('Error fetching books:', err));

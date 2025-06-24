@@ -7,7 +7,8 @@ export default function StudentProfile() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`http://localhost:5000/students/${id}/results`)
+ (`${process.env.REACT_APP_API_URL}/results`
+    fetch(`${process.env.REACT_APP_API_URL}/students/${id}/results`)
       .then(res => res.json())
       .then(results => {
         setStudent({ id, results });

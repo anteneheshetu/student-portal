@@ -14,7 +14,8 @@ export default function Students() {
   }, [navigate]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/students')
+    fetch(`${process.env.REACT_APP_API_URL}/students`)
+
       .then((res) => res.json())
       .then(setStudents)
       .catch((err) => console.error('Error:', err));
