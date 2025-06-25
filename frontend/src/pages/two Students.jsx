@@ -14,7 +14,8 @@ export default function Students() {
   }, [navigate]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/students')
+    fetch(`${process.env.REACT_APP_API_URL}/students`)
+
       .then((res) => res.json())
       .then(setStudents)
       .catch((err) => console.error('Error:', err));
@@ -57,3 +58,21 @@ export default function Students() {
       )}
     </div>
   );
+}
+
+const thStyle = {
+  padding: '12px 16px',
+  textAlign: 'left',
+  fontWeight: '600'
+};
+
+const tdStyle = {
+  padding: '12px 16px',
+  borderBottom: '1px solid #e0e0e0'
+};
+
+const linkStyle = {
+  color: '#007acc',
+  textDecoration: 'none',
+  fontWeight: '500'
+};
