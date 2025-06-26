@@ -56,6 +56,11 @@ app.post('/books/upload', upload.single('file'), (req, res) => {
   res.status(201).json(book);
 });
 
+// Get all books/resources
+app.get('/books', (req, res) => {
+  res.json(data.books || []);
+});
+
 // Student submits work
 app.post('/submissions', upload.single('file'), (req, res) => {
   const { studentId, title } = req.body;
@@ -84,6 +89,21 @@ app.get('/submissions/:studentId', (req, res) => {
   res.json(filtered);
 });
 
-// Existing routes (e.g., /students, /results, etc.) should follow here
+// Get all students
+app.get('/students', (req, res) => {
+  res.json(data.students || []);
+});
+
+// Get all results
+app.get('/results', (req, res) => {
+  const results = data.students.flatMap(s =>
+    (s.results || []).map(r => ({
+      studentId: s.id,
+      name: s.name,
+      ...r
+    }))
+  );
+  res.json(results);
+});
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
