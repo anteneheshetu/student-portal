@@ -89,6 +89,15 @@ app.get('/submissions/:studentId', (req, res) => {
   res.json(filtered);
 });
 
+// Get results for a specific student
+app.get('/students/:id/results', (req, res) => {
+  const student = data.students.find(s => s.id === req.params.id);
+  if (!student) {
+    return res.status(404).json({ error: 'Student not found' });
+  }
+  res.json(student.results || []);
+});
+
 // Get all students
 app.get('/students', (req, res) => {
   res.json(data.students || []);
