@@ -1,3 +1,4 @@
+import ResponsiveLayout from './ResponsiveLayout';
 
 import React, { useState } from 'react';
 import { useEffect } from 'react';
@@ -15,7 +16,8 @@ export default function Admin() {
   }, [navigate]);
 
   // ...rest of your Admin page code
-
+return (
+  <ResponsiveLayout>
   // Student Form
   const [studentId, setStudentId] = useState('');
   const [studentName, setStudentName] = useState('');
@@ -134,6 +136,11 @@ export default function Admin() {
     </div>
   );
 }
+
+
+
+  </ResponsiveLayout>
+);
 
 const cardStyle = {
   backgroundColor: 'white',
