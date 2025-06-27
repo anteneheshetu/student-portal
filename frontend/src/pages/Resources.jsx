@@ -1,40 +1,96 @@
+// Resources.jsx
 import React, { useEffect, useState } from 'react';
+import ResponsiveLayout from './ResponsiveLayout';
 
 export default function Resources() {
   const [books, setBooks] = useState([]);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_URL}/books`)
-      .then((res) => res.json())
-      .then(setBooks)
-      .catch((err) => console.error('Error fetching books:', err));
+      .then(res => res.json())
+      .then(data => setBooks(data));
   }, []);
 
-  return (
-    <div style={{ padding: '40px', fontFamily: 'Segoe UI, sans-serif', backgroundColor: '#f9f9f9', minHeight: '100vh' }}>
-      <h2 style={{ fontSize: '28px', marginBottom: '20px' }}>📚 Available Books</h2>
+  const handleDelete = async (filename) => {
+    if (!window.confirm('Are you sure you want to delete this resource?')) return;
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/books/${filename}`, {
+      method: 'DELETE'
+    });
+    if (res.ok) {
+      setBooks(prev => prev.filter(book => book.filename !== filename));
+    } else {
+      alert('Failed to delete resource');
+    }
+  };
 
-      {books.length === 0 ? (
-        <p>No books found.</p>
-      ) : (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
-          {books.map((book, i) => (
-            <div key={i} style={cardStyle}>
-              <h3 style={{ margin: 0 }}>{book.title}</h3>
-              <p style={{ margin: '8px 0 0', color: '#666' }}>by {book.author}</p>
+  const filteredBooks = books.filter(book =>
+    book.title.toLowerCase().includes(search.toLowerCase()) ||
+    book.author.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <ResponsiveLayout>
+      <h2>📚 Available Resources</h2>
+      <input
+        type="text"
+        placeholder="Search by title or author"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        style={{
+          width: '100%',
+          padding: '10px',
+          marginBottom: '20px',
+          border: '1px solid #ccc',
+          borderRadius: '6px'
+        }}
+      />
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>
+        {filteredBooks.map((book, index) => (
+          <div key={index} style={cardStyle}>
+            <h3 style={{ marginBottom: '0.5rem' }}>{book.title}</h3>
+            <p style={{ marginBottom: '1rem' }}>by {book.author}</p>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <a
+                href={`${process.env.REACT_APP_API_URL}${book.url}`}
+                download
+                style={{ ...linkStyle, marginRight: '10px' }}
+              >
+                ⬇ Download
+              </a>
+              <button
+                onClick={() => handleDelete(book.filename)}
+                style={deleteButtonStyle}
+              >
+                ❌ Delete
+              </button>
             </div>
-          ))}
-        </div>
-      )}
-    </div>
+          </div>
+        ))}
+      </div>
+    </ResponsiveLayout>
   );
 }
 
 const cardStyle = {
-  backgroundColor: 'white',
   padding: '20px',
-  borderRadius: '10px',
-  boxShadow: '0 0 10px rgba(0,0,0,0.1)',
-  minWidth: '220px',
-  flex: '1 1 220px'
+  border: '1px solid #ddd',
+  borderRadius: '8px',
+  backgroundColor: '#fff',
+  boxShadow: '0 2px 5px rgba(0, 0, 0, 0.05)'
+};
+
+const linkStyle = {
+  color: '#007bff',
+  textDecoration: 'none',
+  fontWeight: 'bold'
+};
+
+const deleteButtonStyle = {
+  padding: '6px 10px',
+  border: 'none',
+  borderRadius: '4px',
+  backgroundColor: '#dc3545',
+  color: 'white',
+  cursor: 'pointer'
 };
