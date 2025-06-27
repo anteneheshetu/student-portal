@@ -10,6 +10,7 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
+
 // File upload setup
 const storage = multer.diskStorage({
   destination: 'uploads/',
@@ -55,6 +56,29 @@ app.post('/books/upload', upload.single('file'), (req, res) => {
   saveData();
   res.status(201).json(book);
 });
+// Delete a book by filename
+app.delete('/books/:filename', (req, res) => {
+  const filename = req.params.filename;
+  const index = data.books.findIndex(book => book.filename === filename);
+
+  if (index !== -1) {
+    const filePath = path.join(__dirname, 'uploads', filename);
+
+    // Delete file from uploads folder
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
+
+    // Remove from books array
+    data.books.splice(index, 1);
+    saveData();
+
+    res.sendStatus(200);
+  } else {
+    res.status(404).json({ error: 'File not found' });
+  }
+});
+
 
 // Get all books/resources
 app.get('/books', (req, res) => {
