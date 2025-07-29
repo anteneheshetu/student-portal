@@ -5,6 +5,9 @@ export default function Admin() {
     return (
         <div style={containerStyle}>
             <div style={infoBox}>
+                <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+                    <img src="/images/bis-logo.png" alt="BIS Logo" style={{ maxWidth: '180px' }} />
+                </div>
                 <h2 style={{ color: '#007acc' }}>🎓 Welcome to the British International School's BTEC Portal</h2>
                 <p>
                     The <strong>BTEC (Business and Technology Education Council)</strong> program is a UK-based
@@ -16,6 +19,18 @@ export default function Admin() {
                     Through this portal, educators can manage student data, upload course materials, and track
                     academic progress. Students can access resources, submit work, and monitor their achievements.
                 </p>
+                <p>
+                    📄 <strong>BTEC Syllabus:</strong>{' '}
+                    <a
+                        href="/docs/btec-syllabus.pdf"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ color: '#007acc', fontWeight: 'bold' }}
+                    >
+                        Download PDF
+                    </a>
+                </p>
+
             </div>
 
             <div style={highlightsStyle}>
