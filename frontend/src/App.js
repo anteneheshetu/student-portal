@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import Home from './pages/Home';
 import Students from './pages/Students';
@@ -22,46 +22,63 @@ function AppWrapper() {
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('isLoggedIn') === 'true');
     const [menuOpen, setMenuOpen] = useState(false);
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
     const navigate = useNavigate();
 
     const isAdmin = localStorage.getItem('isLoggedIn') === 'true';
     const studentId = localStorage.getItem('studentId');
+
+    useEffect(() => {
+        const handleResize = () => {
+            const mobile = window.innerWidth <= 768;
+            setIsMobile(mobile);
+            if (!mobile) setMenuOpen(true);
+        };
+
+        handleResize();
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     return (
         <div>
             <nav style={navStyle}>
                 <div style={navHeader}>
                     <Link to="/" style={navBrand}>Student Portal</Link>
-                    <button onClick={() => setMenuOpen(!menuOpen)} style={hamburgerBtn}>☰</button>
+                    {isMobile && (
+                        <button onClick={() => setMenuOpen(!menuOpen)} style={hamburgerBtn}>☰</button>
+                    )}
                 </div>
 
-                <div style={{ ...navLinksContainer, display: menuOpen ? 'block' : 'none' }}>
-                    <div style={navGroup}>
-                        <Link to="/" style={navLink}>Home</Link>
-                        {isAdmin && <Link to="/students" style={navLink}>Students</Link>}
-                        <Link to="/resources" style={navLink}>Resources</Link>
-                        {isAdmin && <Link to="/results" style={navLink}>Results</Link>}
-                        {isAdmin && <Link to="/admin" style={navLink}>Admin</Link>}
-                        {isAdmin && <Link to="/admin-upload" style={navLink}>Upload Material</Link>}
-                        {studentId && <Link to="/submit-work" style={navLink}>Submit Work</Link>}
-                    </div>
+                {(menuOpen || !isMobile) && (
+                    <div style={navLinksContainer}>
+                        <div style={navGroup}>
+                            <Link to="/" style={navLink}>Home</Link>
+                            {isAdmin && <Link to="/students" style={navLink}>Students</Link>}
+                            <Link to="/resources" style={navLink}>Resources</Link>
+                            {isAdmin && <Link to="/results" style={navLink}>Results</Link>}
+                            {isAdmin && <Link to="/admin" style={navLink}>Admin</Link>}
+                            {isAdmin && <Link to="/admin-upload" style={navLink}>Upload Material</Link>}
+                            {studentId && <Link to="/submit-work" style={navLink}>Submit Work</Link>}
+                        </div>
 
-                    <div style={navGroup}>
-                        {!isAdmin && !studentId ? (
-                            <>
-                                <button onClick={() => navigate('/login')} style={navBtn}>Admin Login</button>
-                                <button onClick={() => navigate('/student-login')} style={navBtn}>Student Login</button>
-                            </>
-                        ) : (
-                            <button onClick={() => {
-                                localStorage.removeItem('isLoggedIn');
-                                localStorage.removeItem('studentId');
-                                setIsLoggedIn(false);
-                                navigate('/');
-                            }} style={navBtn}>Logout</button>
-                        )}
+                        <div style={navGroup}>
+                            {!isAdmin && !studentId ? (
+                                <>
+                                    <button onClick={() => navigate('/login')} style={navBtn}>Admin Login</button>
+                                    <button onClick={() => navigate('/student-login')} style={navBtn}>Student Login</button>
+                                </>
+                            ) : (
+                                <button onClick={() => {
+                                    localStorage.removeItem('isLoggedIn');
+                                    localStorage.removeItem('studentId');
+                                    setIsLoggedIn(false);
+                                    navigate('/');
+                                }} style={navBtn}>Logout</button>
+                            )}
+                        </div>
                     </div>
-                </div>
+                )}
             </nav>
 
             <Routes>
@@ -80,7 +97,6 @@ function App() {
     );
 }
 
-// 🔧 Style definitions
 const navStyle = {
     backgroundColor: '#007acc',
     padding: '10px 20px',
