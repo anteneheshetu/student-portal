@@ -10,6 +10,7 @@ import StudentLogin from './pages/StudentLogin';
 import StudentProfile from './pages/StudentProfile';
 import AdminUpload from './pages/AdminUpload';
 import StudentSubmission from './pages/StudentSubmission';
+import { FaBars, FaTimes } from 'react-icons/fa';
 
 function AppWrapper() {
     return (
@@ -21,52 +22,48 @@ function AppWrapper() {
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('isLoggedIn') === 'true');
-    const [menuOpen, setMenuOpen] = useState(false);
-    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+    const [isMenuOpen, setIsMenuOpen] = useState(false); // mobile toggle
     const navigate = useNavigate();
 
     const isAdmin = localStorage.getItem('isLoggedIn') === 'true';
     const studentId = localStorage.getItem('studentId');
 
-    useEffect(() => {
-        const handleResize = () => {
-            const mobile = window.innerWidth <= 768;
-            setIsMobile(mobile);
-            if (!mobile) setMenuOpen(true);
-        };
-
-        handleResize();
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
+    const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+    const closeMenu = () => setIsMenuOpen(false);
 
     return (
         <div>
-            <nav style={{
-                backgroundColor: '#007acc',
-                padding: '10px 20px',
-                color: 'white',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                flexWrap: 'wrap'
-            }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+            {/* ✅ Navbar */}
+            <nav style={navbar}>
+                <div style={navLeft}>
                     <strong style={{ fontSize: '1.2rem' }}>Student Portal</strong>
-                    <Link to="/" style={navLink}>Home</Link>
-                    {isAdmin && <Link to="/students" style={navLink}>Students</Link>}
-                    <Link to="/resources" style={navLink}>Resources</Link>
-                    {isAdmin && <Link to="/results" style={navLink}>Results</Link>}
-                    {isAdmin && <Link to="/admin" style={navLink}>Admin</Link>}
-                    {isAdmin && <Link to="/admin-upload" style={navLink}>Upload Material</Link>}
-                    {studentId && <Link to="/submit-work" style={navLink}>Submit Work</Link>}
+
+                    <button onClick={toggleMenu} className="menu-toggle-btn" style={menuToggleBtn}>
+                        {isMenuOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
+                    </button>
+
+
+                    {/* Hamburger button */}
+                    <button onClick={toggleMenu} style={menuToggleBtn}>
+                        {isMenuOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
+                    </button>
                 </div>
 
-                <div>
+                {/* ✅ Nav Links */}
+                <div style={{ ...navLinks, ...(isMenuOpen ? navLinksShow : {}) }}>
+                    <Link to="/" style={navLink} onClick={closeMenu}>Home</Link>
+                    {isAdmin && <Link to="/students" style={navLink} onClick={closeMenu}>Students</Link>}
+                    <Link to="/resources" style={navLink} onClick={closeMenu}>Resources</Link>
+                    {isAdmin && <Link to="/results" style={navLink} onClick={closeMenu}>Results</Link>}
+                    {isAdmin && <Link to="/admin" style={navLink} onClick={closeMenu}>Admin</Link>}
+                    {isAdmin && <Link to="/admin-upload" style={navLink} onClick={closeMenu}>Upload Material</Link>}
+                    {studentId && <Link to="/submit-work" style={navLink} onClick={closeMenu}>Submit Work</Link>}
+
+                    {/* ✅ Login/Logout Buttons */}
                     {!isAdmin && !studentId ? (
                         <>
-                            <button onClick={() => navigate('/login')} style={navBtn}>Admin Login</button>{' '}
-                            <button onClick={() => navigate('/student-login')} style={navBtn}>Student Login</button>
+                            <button onClick={() => { navigate('/login'); closeMenu(); }} style={navBtn}>Admin Login</button>
+                            <button onClick={() => { navigate('/student-login'); closeMenu(); }} style={navBtn}>Student Login</button>
                         </>
                     ) : (
                         <button onClick={() => {
@@ -74,12 +71,13 @@ function App() {
                             localStorage.removeItem('studentId');
                             setIsLoggedIn(false);
                             navigate('/');
+                            closeMenu();
                         }} style={navBtn}>Logout</button>
                     )}
                 </div>
             </nav>
 
-
+            {/* Your Routes stay the same */}
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/students" element={<Students />} />
@@ -95,22 +93,9 @@ function App() {
         </div>
     );
 }
-const navLink = {
-    color: 'white',
-    textDecoration: 'none',
-    fontWeight: 'bold',
-    padding: '0 10px'
-};
 
-const navBtn = {
-    backgroundColor: 'white',
-    color: '#007acc',
-    border: 'none',
-    borderRadius: '4px',
-    padding: '6px 12px',
-    cursor: 'pointer',
-    fontWeight: 'bold'
-};
+
+
 
 
 const navStyle = {
@@ -152,5 +137,70 @@ const hamburgerBtn = {
     border: 'none',
     cursor: 'pointer'
 };
+
+
+const navbar = {
+    backgroundColor: '#007acc',
+    color: 'white',
+    padding: '10px 20px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    position: 'relative'
+};
+
+const navLeft = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px'
+};
+
+const navLink = {
+    color: 'white',
+    margin: '5px 10px',
+    textDecoration: 'none',
+    fontWeight: 'bold'
+};
+
+const navBtn = {
+    backgroundColor: 'white',
+    color: '#007acc',
+    border: 'none',
+    borderRadius: '4px',
+    padding: '6px 12px',
+    cursor: 'pointer',
+    fontWeight: 'bold',
+    margin: '5px 10px'
+};
+
+const menuToggleBtn = {
+    background: 'none',
+    border: 'none',
+    color: 'white',
+    cursor: 'pointer',
+    display: 'none'
+};
+
+// Navigation links container (desktop default hidden on small)
+const navLinks = {
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    transition: 'all 0.3s ease-in-out'
+};
+
+// Show on small screen if toggled
+const navLinksShow = {
+    flexDirection: 'column',
+    position: 'absolute',
+    top: '60px',
+    left: '0',
+    right: '0',
+    backgroundColor: '#007acc',
+    zIndex: '10',
+    padding: '10px'
+};
+
 
 export default AppWrapper;

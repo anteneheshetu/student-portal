@@ -1,4 +1,4 @@
-.App {
+﻿.App {
   text-align: center;
 }
 
@@ -12,6 +12,14 @@
     animation: App-logo-spin infinite 20s linear;
   }
 }
+
+/* 📱 Show the hamburger toggle button only on small screens */
+@media (max-width: 768px) {
+    .menu-toggle-btn {
+        display: block !important;
+    }
+}
+
 
 .App-header {
   background-color: #282c34;
