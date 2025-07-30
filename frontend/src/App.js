@@ -42,44 +42,43 @@ function App() {
 
     return (
         <div>
-            <nav style={navStyle}>
-                <div style={navHeader}>
-                    <Link to="/" style={navBrand}>Student Portal</Link>
-                    {isMobile && (
-                        <button onClick={() => setMenuOpen(!menuOpen)} style={hamburgerBtn}>☰</button>
-                    )}
+            <nav style={{
+                backgroundColor: '#007acc',
+                padding: '10px 20px',
+                color: 'white',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                flexWrap: 'wrap'
+            }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                    <strong style={{ fontSize: '1.2rem' }}>Student Portal</strong>
+                    <Link to="/" style={navLink}>Home</Link>
+                    {isAdmin && <Link to="/students" style={navLink}>Students</Link>}
+                    <Link to="/resources" style={navLink}>Resources</Link>
+                    {isAdmin && <Link to="/results" style={navLink}>Results</Link>}
+                    {isAdmin && <Link to="/admin" style={navLink}>Admin</Link>}
+                    {isAdmin && <Link to="/admin-upload" style={navLink}>Upload Material</Link>}
+                    {studentId && <Link to="/submit-work" style={navLink}>Submit Work</Link>}
                 </div>
 
-                {(menuOpen || !isMobile) && (
-                    <div style={navLinksContainer}>
-                        <div style={navGroup}>
-                            <Link to="/" style={navLink}>Home</Link>
-                            {isAdmin && <Link to="/students" style={navLink}>Students</Link>}
-                            <Link to="/resources" style={navLink}>Resources</Link>
-                            {isAdmin && <Link to="/results" style={navLink}>Results</Link>}
-                            {isAdmin && <Link to="/admin" style={navLink}>Admin</Link>}
-                            {isAdmin && <Link to="/admin-upload" style={navLink}>Upload Material</Link>}
-                            {studentId && <Link to="/submit-work" style={navLink}>Submit Work</Link>}
-                        </div>
-
-                        <div style={navGroup}>
-                            {!isAdmin && !studentId ? (
-                                <>
-                                    <button onClick={() => navigate('/login')} style={navBtn}>Admin Login</button>
-                                    <button onClick={() => navigate('/student-login')} style={navBtn}>Student Login</button>
-                                </>
-                            ) : (
-                                <button onClick={() => {
-                                    localStorage.removeItem('isLoggedIn');
-                                    localStorage.removeItem('studentId');
-                                    setIsLoggedIn(false);
-                                    navigate('/');
-                                }} style={navBtn}>Logout</button>
-                            )}
-                        </div>
-                    </div>
-                )}
+                <div>
+                    {!isAdmin && !studentId ? (
+                        <>
+                            <button onClick={() => navigate('/login')} style={navBtn}>Admin Login</button>{' '}
+                            <button onClick={() => navigate('/student-login')} style={navBtn}>Student Login</button>
+                        </>
+                    ) : (
+                        <button onClick={() => {
+                            localStorage.removeItem('isLoggedIn');
+                            localStorage.removeItem('studentId');
+                            setIsLoggedIn(false);
+                            navigate('/');
+                        }} style={navBtn}>Logout</button>
+                    )}
+                </div>
             </nav>
+
 
             <Routes>
                 <Route path="/" element={<Home />} />
@@ -96,6 +95,23 @@ function App() {
         </div>
     );
 }
+const navLink = {
+    color: 'white',
+    textDecoration: 'none',
+    fontWeight: 'bold',
+    padding: '0 10px'
+};
+
+const navBtn = {
+    backgroundColor: 'white',
+    color: '#007acc',
+    border: 'none',
+    borderRadius: '4px',
+    padding: '6px 12px',
+    cursor: 'pointer',
+    fontWeight: 'bold'
+};
+
 
 const navStyle = {
     backgroundColor: '#007acc',
@@ -127,21 +143,7 @@ const navGroup = {
     paddingBottom: '10px'
 };
 
-const navLink = {
-    color: 'white',
-    textDecoration: 'none',
-    fontWeight: 'bold'
-};
 
-const navBtn = {
-    backgroundColor: 'white',
-    color: '#007acc',
-    border: 'none',
-    borderRadius: '4px',
-    padding: '6px 12px',
-    cursor: 'pointer',
-    fontWeight: 'bold'
-};
 
 const hamburgerBtn = {
     background: 'transparent',
