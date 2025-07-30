@@ -35,44 +35,26 @@ function App() {
         <div>
             {/* ✅ Navbar */}
             <nav style={navbar}>
-                {/* Left section: Logo + Site name */}
                 <div style={navLeft}>
-                    <img src="/images/bis-logo.png" alt="BIS Logo" style={{ height: '40px', marginRight: '10px' }} />
-                    <span style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'white' }}>Student Portal</span>
+                    <strong style={{ fontSize: '1.2rem' }}>Student Portal</strong>
 
-                    {/* Hamburger toggle */}
-                    <button onClick={toggleMenu} className="menu-toggle-btn" style={menuToggleBtn}>
+                    {/* Hamburger button */}
+                    <button onClick={toggleMenu} style={menuToggleBtn}>
                         {isMenuOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
                     </button>
                 </div>
 
-                {/* Links */}
+                {/* ✅ Nav Links */}
                 <div style={{ ...navLinks, ...(isMenuOpen ? navLinksShow : {}) }}>
                     <Link to="/" style={navLink} onClick={closeMenu}>Home</Link>
+                    {isAdmin && <Link to="/students" style={navLink} onClick={closeMenu}>Students</Link>}
+                    <Link to="/resources" style={navLink} onClick={closeMenu}>Resources</Link>
+                    {isAdmin && <Link to="/results" style={navLink} onClick={closeMenu}>Results</Link>}
+                    {isAdmin && <Link to="/admin" style={navLink} onClick={closeMenu}>Admin</Link>}
+                    {isAdmin && <Link to="/admin-upload" style={navLink} onClick={closeMenu}>Upload Material</Link>}
+                    {studentId && <Link to="/submit-work" style={navLink} onClick={closeMenu}>Submit Work</Link>}
 
-                    {/* Resources Dropdown */}
-                    <div className="dropdown">
-                        <span style={navLink}>Resources ▾</span>
-                        <div className="dropdown-content animated-dropdown">
-                            <Link to="/resources" onClick={closeMenu}>All Books</Link>
-                            <Link to="/submit-work" onClick={closeMenu}>Submit Work</Link>
-                        </div>
-                    </div>
-
-                    {/* Admin Dropdown (only if logged in) */}
-                    {isAdmin && (
-                        <div className="dropdown">
-                            <span style={navLink}>Admin ▾</span>
-                            <div className="dropdown-content animated-dropdown">
-                                <Link to="/admin" onClick={closeMenu}>Dashboard</Link>
-                                <Link to="/admin-upload" onClick={closeMenu}>Upload Material</Link>
-                                <Link to="/results" onClick={closeMenu}>Results</Link>
-                                <Link to="/students" onClick={closeMenu}>Students</Link>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Auth buttons */}
+                    {/* ✅ Login/Logout Buttons */}
                     {!isAdmin && !studentId ? (
                         <>
                             <button onClick={() => { navigate('/login'); closeMenu(); }} style={navBtn}>Admin Login</button>
@@ -89,7 +71,6 @@ function App() {
                     )}
                 </div>
             </nav>
-
 
             {/* Your Routes stay the same */}
             <Routes>
@@ -109,33 +90,6 @@ function App() {
 }
 
 
-
-const navbar = {
-    backgroundColor: '#007acc',
-    color: 'white',
-    padding: '10px 20px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    position: 'relative',
-    zIndex: 10
-};
-
-const navLeft = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px'
-};
-
-const navLink = {
-    color: 'white',
-    margin: '5px 10px',
-    textDecoration: 'none',
-    fontWeight: 'bold',
-    cursor: 'pointer'
-};
-
 const navBtn = {
     backgroundColor: 'white',
     color: '#007acc',
@@ -143,39 +97,8 @@ const navBtn = {
     borderRadius: '4px',
     padding: '6px 12px',
     cursor: 'pointer',
-    fontWeight: 'bold',
-    margin: '5px 10px'
+    fontWeight: 'bold'
 };
-
-const menuToggleBtn = {
-    background: 'none',
-    border: 'none',
-    color: 'white',
-    cursor: 'pointer',
-    display: 'none',
-    fontSize: '1.5rem'
-};
-
-const navLinks = {
-    display: 'flex',
-    flexWrap: 'wrap',
-    alignItems: 'center',
-    transition: 'all 0.3s ease-in-out'
-};
-
-const navLinksShow = {
-    flexDirection: 'column',
-    position: 'absolute',
-    top: '60px',
-    left: '0',
-    right: '0',
-    backgroundColor: '#007acc',
-    zIndex: '10',
-    padding: '10px'
-};
-
-
-
 
 
 const navStyle = {
@@ -190,6 +113,12 @@ const navHeader = {
     alignItems: 'center'
 };
 
+const navBrand = {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: '1.2rem',
+    textDecoration: 'none'
+};
 
 const navLinksContainer = {
     marginTop: '10px'
@@ -213,16 +142,68 @@ const hamburgerBtn = {
 };
 
 
+const navbar = {
+    backgroundColor: '#007acc',
+    color: 'white',
+    padding: '10px 20px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    position: 'relative'
+};
 
+const navLeft = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px'
+};
 
+const navLink = {
+    color: 'white',
+    margin: '5px 10px',
+    textDecoration: 'none',
+    fontWeight: 'bold'
+};
 
+const navBtn = {
+    backgroundColor: 'white',
+    color: '#007acc',
+    border: 'none',
+    borderRadius: '4px',
+    padding: '6px 12px',
+    cursor: 'pointer',
+    fontWeight: 'bold',
+    margin: '5px 10px'
+};
 
+const menuToggleBtn = {
+    background: 'none',
+    border: 'none',
+    color: 'white',
+    cursor: 'pointer',
+    display: 'none'
+};
 
+// Navigation links container (desktop default hidden on small)
+const navLinks = {
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    transition: 'all 0.3s ease-in-out'
+};
 
-
-
-
-
+// Show on small screen if toggled
+const navLinksShow = {
+    flexDirection: 'column',
+    position: 'absolute',
+    top: '60px',
+    left: '0',
+    right: '0',
+    backgroundColor: '#007acc',
+    zIndex: '10',
+    padding: '10px'
+};
 
 
 export default AppWrapper;
