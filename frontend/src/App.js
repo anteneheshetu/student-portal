@@ -90,15 +90,7 @@ function App() {
 }
 
 
-const navBtn = {
-    backgroundColor: 'white',
-    color: '#007acc',
-    border: 'none',
-    borderRadius: '4px',
-    padding: '6px 12px',
-    cursor: 'pointer',
-    fontWeight: 'bold'
-};
+
 
 
 const navStyle = {
