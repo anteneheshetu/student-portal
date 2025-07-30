@@ -213,16 +213,6 @@ const hamburgerBtn = {
 };
 
 
-const navbar = {
-    backgroundColor: '#007acc',
-    color: 'white',
-    padding: '10px 20px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    position: 'relative'
-};
 
 
 
